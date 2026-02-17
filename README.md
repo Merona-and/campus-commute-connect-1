@@ -1,2 +1,30 @@
-# campus-commute-connect-1
-Campus Commute Connect is a smart web-based application designed to help students track college transportation, view commute information, and securely pay transport fees online. The system provides real-time access to commute details, payment status, and transport management features in a simple and user-friendly interface. 
+# Campus Commute Connect
+
+## Project info
+
+This project is a campus commute connection application.
+
+## Getting Started
+
+To work locally, you need Node.js & npm installed.
+
+Follow these steps:
+
+```sh
+# Step 1: Install dependencies
+npm i
+
+# Step 2: Start the development server
+npm run dev
+```
+
+## Technologies
+
+This project is built with:
+
+- Vite
+- TypeScript
+- React
+- shadcn-ui
+- Tailwind CSS
+

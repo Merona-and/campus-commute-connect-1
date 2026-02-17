@@ -1,0 +1,91 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 210 20% 98%;
+    --foreground: 215 25% 15%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 215 25% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 215 25% 15%;
+
+    --primary: 215 80% 45%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 210 30% 94%;
+    --secondary-foreground: 215 25% 25%;
+
+    --muted: 210 20% 96%;
+    --muted-foreground: 215 15% 50%;
+
+    --accent: 42 95% 55%;
+    --accent-foreground: 30 50% 15%;
+
+    --destructive: 0 72% 55%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 145 65% 42%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 35 92% 55%;
+    --warning-foreground: 30 50% 15%;
+
+    --border: 214 25% 90%;
+    --input: 214 25% 90%;
+    --ring: 215 80% 45%;
+
+    --radius: 0.75rem;
+
+    --sidebar-background: 215 25% 15%;
+    --sidebar-foreground: 210 20% 90%;
+    --sidebar-primary: 215 80% 55%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 215 30% 22%;
+    --sidebar-accent-foreground: 210 20% 90%;
+    --sidebar-border: 215 20% 25%;
+    --sidebar-ring: 215 80% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+}
+
+@layer utilities {
+  .glass-card {
+    @apply bg-card/80 backdrop-blur-lg border border-border/50 shadow-lg;
+  }
+
+  .status-active {
+    @apply bg-[hsl(var(--success))] text-[hsl(var(--success-foreground))];
+  }
+
+  .status-delayed {
+    @apply bg-[hsl(var(--destructive))] text-[hsl(var(--destructive-foreground))];
+  }
+
+  .status-badge {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold;
+  }
+
+  .bottom-nav-item {
+    @apply flex flex-col items-center gap-1 text-xs font-medium text-muted-foreground transition-colors;
+  }
+
+  .bottom-nav-item.active {
+    @apply text-primary;
+  }
+}
