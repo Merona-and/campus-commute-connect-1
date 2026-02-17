@@ -19,7 +19,7 @@ const StudentDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background max-w-md mx-auto relative">
+    <div className="min-h-screen bg-background/90 backdrop-blur-sm max-w-md mx-auto relative">
       {renderTab()}
       <BottomNav active={tab} onNavigate={setTab} />
     </div>

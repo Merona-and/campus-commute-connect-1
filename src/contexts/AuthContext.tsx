@@ -9,12 +9,15 @@ interface User {
   studentId?: string;
   busNumber: string;
   route?: string;
+  password?: string; // Added for admin view requirement
 }
 
 interface AuthContextType {
   user: User | null;
   login: (email: string, password: string, role: UserRole) => boolean;
   logout: () => void;
+  registerStudent: (name: string, rollNumber: string, password: string) => boolean;
+  students: User[];
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -43,17 +46,64 @@ const MOCK_USERS: Record<UserRole, User> = {
 };
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(() => {
+    const savedUser = localStorage.getItem("currentUser");
+    return savedUser ? JSON.parse(savedUser) : null;
+  });
 
-  const login = (email: string, _password: string, role: UserRole) => {
-    setUser(MOCK_USERS[role]);
+  const [students, setStudents] = useState<User[]>(() => {
+    const savedStudents = localStorage.getItem("registeredStudents");
+    return savedStudents ? JSON.parse(savedStudents) : [];
+  });
+
+  const registerStudent = (name: string, rollNumber: string, password: string) => {
+    const newStudent: User = {
+      name,
+      email: rollNumber,
+      role: "student",
+      studentId: rollNumber,
+      password,
+      busNumber: "Not Assigned",
+      route: "Not Assigned"
+    };
+
+    const updatedStudents = [...students, newStudent];
+    setStudents(updatedStudents);
+    localStorage.setItem("registeredStudents", JSON.stringify(updatedStudents));
     return true;
   };
 
-  const logout = () => setUser(null);
+  const login = (identifier: string, password: string, role: UserRole) => {
+    if (role === "student") {
+      const student = students.find(s => s.studentId === identifier && s.password === password);
+      if (student) {
+        setUser(student);
+        localStorage.setItem("currentUser", JSON.stringify(student));
+        return true;
+      }
+
+      if (identifier === "student" && password === "pass") {
+        const mock = MOCK_USERS["student"];
+        setUser(mock);
+        localStorage.setItem("currentUser", JSON.stringify(mock));
+        return true;
+      }
+      return false;
+    } else {
+      const mockUser = MOCK_USERS[role];
+      setUser(mockUser);
+      localStorage.setItem("currentUser", JSON.stringify(mockUser));
+      return true;
+    }
+  };
+
+  const logout = () => {
+    setUser(null);
+    localStorage.removeItem("currentUser");
+  };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout, registerStudent, students }}>
       {children}
     </AuthContext.Provider>
   );

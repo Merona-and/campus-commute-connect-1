@@ -7,7 +7,7 @@ const DriverDashboard = () => {
   const [tripActive, setTripActive] = useState(false);
 
   return (
-    <div className="min-h-screen bg-background max-w-md mx-auto px-5 pt-6 pb-6 animate-fade-in">
+    <div className="min-h-screen bg-background/90 backdrop-blur-sm max-w-md mx-auto px-5 pt-6 pb-6 animate-fade-in">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>

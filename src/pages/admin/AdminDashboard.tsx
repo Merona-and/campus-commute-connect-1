@@ -10,12 +10,7 @@ const buses = [
   { id: "105", number: "TN-01-7890", status: "stopped", driver: "Suresh K" },
 ];
 
-const students = [
-  { name: "Arun Kumar", status: "Active", expiry: "15 Jun 2027" },
-  { name: "Priya S", status: "Active", expiry: "15 Jun 2027" },
-  { name: "Deepak R", status: "Expired", expiry: "01 Jan 2026" },
-  { name: "Kavitha M", status: "Active", expiry: "15 Jun 2027" },
-];
+// Local students array removed in favor of AuthContext students
 
 const paymentRecords = [
   { name: "Arun Kumar", amount: "₹15,000", date: "12 Jan 2026", status: "Paid" },
@@ -27,7 +22,7 @@ const paymentRecords = [
 type AdminTab = "overview" | "buses" | "students" | "payments";
 
 const AdminDashboard = () => {
-  const { user, logout } = useAuth();
+  const { user, logout, students } = useAuth();
   const [tab, setTab] = useState<AdminTab>("overview");
 
   const activeBuses = buses.filter((b) => b.status === "active").length;
@@ -41,7 +36,7 @@ const AdminDashboard = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background/90 backdrop-blur-sm">
       {/* Header */}
       <div className="bg-primary text-primary-foreground px-5 pt-6 pb-8">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
@@ -62,11 +57,10 @@ const AdminDashboard = () => {
             <button
               key={t.id}
               onClick={() => setTab(t.id)}
-              className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-xs font-semibold transition-all ${
-                tab === t.id
-                  ? "bg-primary text-primary-foreground shadow-sm"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
+              className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-xs font-semibold transition-all ${tab === t.id
+                ? "bg-primary text-primary-foreground shadow-sm"
+                : "text-muted-foreground hover:text-foreground"
+                }`}
             >
               {t.icon}
               {t.label}
@@ -143,18 +137,33 @@ const AdminDashboard = () => {
 
         {tab === "students" && (
           <div className="space-y-3 animate-fade-in">
-            <h2 className="text-lg font-bold">Student Subscriptions</h2>
-            {students.map((s, i) => (
-              <div key={i} className="flex items-center justify-between bg-card rounded-xl p-4 border border-border">
-                <div>
-                  <p className="font-semibold text-sm">{s.name}</p>
-                  <p className="text-xs text-muted-foreground">Expiry: {s.expiry}</p>
+            <h2 className="text-lg font-bold">Registered Students</h2>
+            {students && students.length > 0 ? (
+              students.map((s, i) => (
+                <div key={i} className="flex flex-col gap-2 bg-card rounded-xl p-4 border border-border">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <p className="font-semibold text-sm">{s.name}</p>
+                      <p className="text-xs text-muted-foreground">ID: {s.studentId || s.email}</p>
+                    </div>
+                    <span className="status-badge status-active">Active</span>
+                  </div>
+
+                  <div className="bg-muted p-2 rounded-lg mt-2 text-xs">
+                    <p className="text-muted-foreground mb-1">Credentials:</p>
+                    <div className="flex justify-between items-center">
+                      <span className="font-mono bg-background px-2 py-0.5 rounded border border-border">
+                        Pass: {s.password}
+                      </span>
+                    </div>
+                  </div>
                 </div>
-                <span className={`status-badge ${s.status === "Active" ? "status-active" : "status-delayed"}`}>
-                  {s.status === "Active" ? "✅ Active" : "❌ Expired"}
-                </span>
+              ))
+            ) : (
+              <div className="text-center py-8 text-muted-foreground">
+                <p>No students registered yet.</p>
               </div>
-            ))}
+            )}
           </div>
         )}
 
