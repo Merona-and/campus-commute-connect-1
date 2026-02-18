@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,50 +6,50 @@
 
 @layer base {
   :root {
-    --background: 210 20% 98%;
-    --foreground: 215 25% 15%;
+    --background: 240 15% 6%;
+    --foreground: 240 10% 92%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 215 25% 15%;
+    --card: 240 12% 10%;
+    --card-foreground: 240 10% 92%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 215 25% 15%;
+    --popover: 240 12% 10%;
+    --popover-foreground: 240 10% 92%;
 
-    --primary: 215 80% 45%;
+    --primary: 262 83% 65%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 30% 94%;
-    --secondary-foreground: 215 25% 25%;
+    --secondary: 240 10% 16%;
+    --secondary-foreground: 240 10% 80%;
 
-    --muted: 210 20% 96%;
-    --muted-foreground: 215 15% 50%;
+    --muted: 240 10% 14%;
+    --muted-foreground: 240 8% 55%;
 
-    --accent: 42 95% 55%;
-    --accent-foreground: 30 50% 15%;
+    --accent: 35 100% 55%;
+    --accent-foreground: 30 60% 10%;
 
-    --destructive: 0 72% 55%;
+    --destructive: 0 80% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --success: 145 65% 42%;
+    --success: 145 70% 48%;
     --success-foreground: 0 0% 100%;
 
-    --warning: 35 92% 55%;
-    --warning-foreground: 30 50% 15%;
+    --warning: 35 100% 55%;
+    --warning-foreground: 30 60% 10%;
 
-    --border: 214 25% 90%;
-    --input: 214 25% 90%;
-    --ring: 215 80% 45%;
+    --border: 262 30% 22%;
+    --input: 262 20% 18%;
+    --ring: 262 83% 65%;
 
     --radius: 0.75rem;
 
-    --sidebar-background: 215 25% 15%;
-    --sidebar-foreground: 210 20% 90%;
-    --sidebar-primary: 215 80% 55%;
+    --sidebar-background: 240 18% 8%;
+    --sidebar-foreground: 240 10% 85%;
+    --sidebar-primary: 262 83% 65%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 215 30% 22%;
-    --sidebar-accent-foreground: 210 20% 90%;
-    --sidebar-border: 215 20% 25%;
-    --sidebar-ring: 215 80% 55%;
+    --sidebar-accent: 240 12% 14%;
+    --sidebar-accent-foreground: 240 10% 85%;
+    --sidebar-border: 262 25% 18%;
+    --sidebar-ring: 262 83% 65%;
   }
 }
 
@@ -60,21 +60,46 @@
 
   body {
     @apply bg-background text-foreground font-sans antialiased;
-    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
+    background-image:
+      radial-gradient(ellipse at 20% 50%, hsl(262 83% 65% / 0.06) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 20%, hsl(35 100% 55% / 0.04) 0%, transparent 50%);
+    background-attachment: fixed;
   }
 }
 
 @layer utilities {
   .glass-card {
-    @apply bg-card/80 backdrop-blur-lg border border-border/50 shadow-lg;
+    @apply bg-card/80 backdrop-blur-xl border border-border/60 shadow-lg;
+    box-shadow: 0 4px 24px hsl(262 83% 65% / 0.08), 0 1px 4px hsl(0 0% 0% / 0.4);
+  }
+
+  .glass-dark {
+    background: hsl(240 12% 10% / 0.85);
+    backdrop-filter: blur(20px);
+    border: 1px solid hsl(262 30% 22% / 0.7);
+  }
+
+  .glow-border {
+    box-shadow: 0 0 0 1px hsl(262 83% 65% / 0.4), 0 0 16px hsl(262 83% 65% / 0.15);
+  }
+
+  .gradient-primary {
+    background: linear-gradient(135deg, hsl(262 83% 60%), hsl(280 70% 55%));
+  }
+
+  .gradient-amber {
+    background: linear-gradient(135deg, hsl(35 100% 55%), hsl(20 100% 50%));
   }
 
   .status-active {
-    @apply bg-[hsl(var(--success))] text-[hsl(var(--success-foreground))];
+    @apply bg-[hsl(var(--success))/15] text-[hsl(var(--success))];
+    border: 1px solid hsl(145 70% 48% / 0.3);
   }
 
   .status-delayed {
-    @apply bg-[hsl(var(--destructive))] text-[hsl(var(--destructive-foreground))];
+    @apply bg-[hsl(var(--destructive))/15] text-[hsl(var(--destructive))];
+    border: 1px solid hsl(0 80% 60% / 0.3);
   }
 
   .status-badge {
@@ -82,10 +107,11 @@
   }
 
   .bottom-nav-item {
-    @apply flex flex-col items-center gap-1 text-xs font-medium text-muted-foreground transition-colors;
+    @apply flex flex-col items-center gap-1 text-xs font-medium text-muted-foreground transition-all duration-200;
   }
 
   .bottom-nav-item.active {
     @apply text-primary;
+    filter: drop-shadow(0 0 8px hsl(262 83% 65% / 0.6));
   }
 }
