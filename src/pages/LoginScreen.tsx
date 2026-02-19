@@ -31,85 +31,92 @@ const LoginScreen = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-background selection:bg-primary/30">
       {/* Hero */}
-      <div className="relative h-60 overflow-hidden">
-        <img src={splashBg} alt="Campus" className="w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-b from-violet-950/70 via-purple-950/85 to-[hsl(240,15%,6%)] flex flex-col items-center justify-center text-white">
-          <div className="w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center mb-3 shadow-lg" style={{ boxShadow: '0 0 32px hsl(262 83% 65% / 0.4)' }}>
-            <Bus className="w-8 h-8 text-violet-300" />
+      <div className="relative h-72 overflow-hidden flex-shrink-0">
+        <img src={splashBg} alt="Campus" className="w-full h-full object-cover scale-110 blur-[2px] opacity-60" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-white px-6">
+          <div className="w-20 h-20 rounded-[2rem] glass-premium flex items-center justify-center mb-6 shadow-2xl relative group rotate-3 hover:rotate-0 transition-transform duration-500">
+            <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-full animate-pulse" />
+            <Bus className="w-10 h-10 text-primary relative z-10 glow-text" />
           </div>
-          <h1 className="text-2xl font-extrabold tracking-tight">Campus Commute</h1>
-          <p className="text-sm text-violet-300 mt-1 font-medium">Track • Pay • Ride</p>
+          <h1 className="text-4xl font-black tracking-tighter glow-text text-center leading-none mb-2">
+            CAMPUS<br />COMMUTE
+          </h1>
+          <div className="flex items-center gap-3 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md">
+            <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-70">Track • Pay • Ride</span>
+          </div>
         </div>
       </div>
 
-      {/* Form */}
-      <div className="flex-1 -mt-6 rounded-t-3xl px-6 pt-8 pb-6" style={{ background: 'hsl(240 15% 6%)', borderTop: '1px solid hsl(262 30% 22%)' }}>
-        <h2 className="text-xl font-bold mb-2 text-foreground">Welcome back</h2>
-        <p className="text-sm text-muted-foreground mb-6">Sign in to your account</p>
+      {/* Form Container */}
+      <div className="flex-1 -mt-10 rounded-t-[3rem] px-8 pt-10 pb-12 glass-premium border-t border-white/10 relative z-10 shadow-[0_-20px_50px_rgba(0,0,0,0.5)]">
+        <div className="space-y-1 mb-8">
+          <h2 className="text-2xl font-black text-foreground tracking-tight">Welcome back</h2>
+          <p className="text-sm text-muted-foreground font-medium opacity-60">Authorize to access your dashboard</p>
+        </div>
 
         {/* Role selector */}
-        <div className="flex gap-2 mb-6">
+        <div className="grid grid-cols-3 gap-3 mb-8">
           {roles.map((r) => (
             <button
               key={r.value}
               onClick={() => setRole(r.value)}
-              className={`flex-1 flex flex-col items-center gap-1.5 py-3 rounded-xl border-2 text-sm font-semibold transition-all duration-200 ${role === r.value
-                ? "border-violet-500 bg-violet-500/15 text-violet-300"
-                : "border-border text-muted-foreground hover:border-violet-500/40 hover:text-violet-400"
+              className={`flex flex-col items-center gap-2 py-4 rounded-2xl border transition-all duration-300 ${role === r.value
+                ? "border-primary bg-primary/10 text-primary shadow-[0_0_20px_rgba(168,85,247,0.15)] scale-[1.02]"
+                : "border-white/5 bg-white/5 text-muted-foreground hover:bg-white/10 hover:border-white/10"
                 }`}
-              style={role === r.value ? { boxShadow: '0 0 12px hsl(262 83% 65% / 0.2)' } : {}}
             >
-              {r.icon}
-              {r.label}
+              <div className={`transition-transform duration-300 ${role === r.value ? "scale-110 rotate-3" : ""}`}>
+                {r.icon}
+              </div>
+              <span className="text-[10px] font-black uppercase tracking-widest">{r.label}</span>
             </button>
           ))}
         </div>
 
-        <form onSubmit={handleLogin} className="space-y-4">
-          <div>
-            <label className="text-sm font-medium text-muted-foreground mb-1.5 block">
-              {role === "student" ? "Roll Number / Student ID" : "Email"}
+        <form onSubmit={handleLogin} className="space-y-5">
+          <div className="space-y-2">
+            <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest px-1 opacity-60">
+              {role === "student" ? "Identification Number" : "Administrator Email"}
             </label>
             <input
               type={role === "student" ? "text" : "email"}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder={role === "student" ? "RA21..." : "your@college.edu"}
-              className="w-full px-4 py-3 rounded-xl border border-input bg-muted text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-violet-500/60 focus:border-violet-500/60 transition-all"
+              className="w-full h-14 px-5 rounded-2xl border border-white/5 bg-white/5 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary/40 transition-all font-medium"
             />
           </div>
-          <div>
-            <label className="text-sm font-medium text-muted-foreground mb-1.5 block">Password</label>
+          <div className="space-y-2">
+            <div className="flex justify-between items-end px-1">
+              <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest opacity-60">Security Key</label>
+              <span className="text-[10px] font-bold text-primary cursor-pointer hover:underline uppercase tracking-wide">Forgot?</span>
+            </div>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
-              className="w-full px-4 py-3 rounded-xl border border-input bg-muted text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-violet-500/60 focus:border-violet-500/60 transition-all"
+              className="w-full h-14 px-5 rounded-2xl border border-white/5 bg-white/5 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary/40 transition-all font-medium"
             />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3.5 rounded-xl font-bold text-base transition-all hover:opacity-90 disabled:opacity-60 text-white mt-2"
-            style={{ background: 'linear-gradient(135deg, hsl(262 83% 60%), hsl(280 70% 55%))', boxShadow: '0 4px 20px hsl(262 83% 65% / 0.35)' }}
+            className="w-full h-14 mt-4 rounded-2xl font-black text-xs uppercase tracking-[0.2em] transition-all hover:brightness-110 active:scale-[0.98] text-white shadow-2xl shadow-primary/20 bg-primary disabled:opacity-50"
           >
-            {loading ? "Signing in..." : "Sign In"}
+            {loading ? "Establishing Link..." : "Secure Access"}
           </button>
 
-          <p className="text-center text-sm text-muted-foreground">
-            Forgot password? <span className="text-violet-400 font-medium cursor-pointer hover:text-violet-300">Reset here</span>
-          </p>
-
           {role === "student" && (
-            <div className="pt-3 border-t border-border mt-2">
-              <p className="text-center text-sm text-muted-foreground">
-                New Student?{" "}
-                <Link to="/register" className="text-amber-400 font-bold cursor-pointer hover:text-amber-300 hover:underline">
-                  Register Now
+            <div className="pt-6 mt-4 border-t border-white/5">
+              <p className="text-center text-sm font-medium text-muted-foreground opacity-60">
+                New to the system?{" "}
+                <Link to="/register" className="text-primary font-black hover:underline tracking-tight">
+                  REGISTER NOW
                 </Link>
               </p>
             </div>

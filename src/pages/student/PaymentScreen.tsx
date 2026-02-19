@@ -108,7 +108,7 @@ const PaymentScreen = () => {
           <span className="text-3xl font-extrabold text-foreground">15,000</span>
           <span className="text-sm text-muted-foreground mb-1 ml-1">/ year</span>
         </div>
-        <p className="text-xs text-muted-foreground mb-4">Covers all routes · Valid 12 months</p>
+        <p className="text-xs text-muted-foreground mb-4">Covers all routes | Valid 12 months</p>
 
         <div className="flex items-center gap-2 text-xs text-muted-foreground mb-4 p-3 rounded-xl" style={{ background: 'hsl(240 15% 7%)' }}>
           <Clock className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />
@@ -144,7 +144,7 @@ const PaymentScreen = () => {
             >
               <div>
                 <p className="font-semibold text-sm text-foreground">{p.year}</p>
-                <p className="text-xs text-muted-foreground mt-0.5">{p.date} · {p.id}</p>
+                <p className="text-xs text-muted-foreground mt-0.5">{p.date} | {p.id}</p>
               </div>
               <div className="text-right">
                 <p className="text-sm font-bold text-foreground">{p.amount}</p>

@@ -119,7 +119,7 @@ const AdminDashboard = () => {
                     </div>
                   </div>
                   <span className={`status-badge ${bus.status === "active" ? "status-active" : bus.status === "delayed" ? "status-delayed" : "bg-muted text-muted-foreground"}`}>
-                    {bus.status === "active" ? "🟢 On Time" : bus.status === "delayed" ? "🔴 Delayed" : "⚪ Stopped"}
+                    {bus.status === "active" ? "On Time" : bus.status === "delayed" ? "Delayed" : "Stopped"}
                   </span>
                 </div>
               ))}
