@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuth, UserRole } from "@/contexts/AuthContext";
-import { Bus, User, Shield, AlertCircle, CheckCircle2 } from "lucide-react";
+import { Bus, User, Shield } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import splashBg from "@/assets/splash-bg.jpg";
 import { useToast } from "@/components/ui/use-toast";
@@ -17,14 +17,11 @@ const RegisterScreen = () => {
     const { toast } = useToast();
 
     const [name, setName] = useState("");
-    const [identifier, setIdentifier] = useState("");
+    const [id, setId] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [role, setRole] = useState<UserRole>("student");
     const [loading, setLoading] = useState(false);
-
-    const hasUppercase = /[A-Z]/.test(password);
-    const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
 
     const handleRegister = (e: React.FormEvent) => {
         e.preventDefault();
@@ -37,7 +34,7 @@ const RegisterScreen = () => {
             return;
         }
 
-        if (!name || !identifier || !password) {
+        if (!name || !id || !password) {
             toast({
                 title: "All fields are required",
                 variant: "destructive",
@@ -45,32 +42,12 @@ const RegisterScreen = () => {
             return;
         }
 
-        // Domain validation
-        if (role !== "student" && !identifier.endsWith("@gmail.com")) {
-            toast({
-                title: "Invalid Email Domain",
-                description: "Only @gmail.com addresses are authorized.",
-                variant: "destructive",
-            });
-            return;
-        }
-
-        // Password strength validation
-        if (!hasUppercase || !hasSpecial) {
-            toast({
-                title: "Weak Password",
-                description: "Password must contain one uppercase and one special character.",
-                variant: "destructive",
-            });
-            return;
-        }
-
         setLoading(true);
         setTimeout(() => {
-            const result = registerUser({ name, identifier, password, role });
+            const success = registerUser(name, id, password, role);
             setLoading(false);
 
-            if (result.success) {
+            if (success) {
                 toast({
                     title: "Registration Successful",
                     description: "Please login with your credentials",
@@ -79,7 +56,7 @@ const RegisterScreen = () => {
             } else {
                 toast({
                     title: "Registration Failed",
-                    description: result.message,
+                    description: "An error occurred during registration",
                     variant: "destructive",
                 });
             }
@@ -97,7 +74,7 @@ const RegisterScreen = () => {
                         <div className="absolute inset-0 bg-amber-500/20 blur-2xl rounded-full animate-pulse" />
                         <Bus className="w-10 h-10 text-amber-400 relative z-10" />
                     </div>
-                    <h1 className="text-3xl font-black tracking-tighter glow-text text-center leading-none mb-2">
+                    <h1 className="text-3xl font-black tracking-tighter glow-text text-center leading-none mb-2 text-white">
                         {role.toUpperCase()}<br />ENROLLMENT
                     </h1>
                     <p className="text-[10px] font-black uppercase tracking-[0.2em] text-amber-400/80">Join Campus Commute Connect</p>
@@ -119,7 +96,7 @@ const RegisterScreen = () => {
                             type="button"
                             onClick={() => {
                                 setRole(r.value);
-                                setIdentifier("");
+                                setId("");
                             }}
                             className={`flex flex-col items-center gap-2 py-4 rounded-2xl border transition-all duration-300 ${role === r.value
                                 ? "border-amber-500 bg-amber-500/10 text-amber-500 shadow-[0_0_20px_rgba(245,158,11,0.15)] scale-[1.02]"
@@ -148,15 +125,13 @@ const RegisterScreen = () => {
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest px-1 opacity-60">
-                            {role === "student" ? "Identification ID" : "Gmail Address"}
-                        </label>
+                        <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest px-1 opacity-60">Identification ID</label>
                         <input
-                            type={role === "student" ? "text" : "email"}
+                            type="text"
                             required
-                            value={identifier}
-                            onChange={(e) => setIdentifier(e.target.value)}
-                            placeholder={role === "student" ? "RA211100..." : "example@gmail.com"}
+                            value={id}
+                            onChange={(e) => setId(e.target.value)}
+                            placeholder={role === "student" ? "RA21..." : "ADM-001..."}
                             className="w-full h-14 px-5 rounded-2xl border border-white/5 bg-white/5 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500/40 transition-all font-medium"
                         />
                     </div>
@@ -184,22 +159,6 @@ const RegisterScreen = () => {
                                 placeholder="••••••••"
                                 className="w-full h-14 px-5 rounded-2xl border border-white/5 bg-white/5 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500/40 transition-all font-medium"
                             />
-                        </div>
-                    </div>
-
-                    {/* Password Rules Feedback */}
-                    <div className="px-1 space-y-2">
-                        <div className="flex items-center gap-2">
-                            {hasUppercase ? <CheckCircle2 className="w-3 h-3 text-green-500" /> : <AlertCircle className="w-3 h-3 text-muted-foreground opacity-40" />}
-                            <span className={`text-[9px] font-bold uppercase tracking-wider ${hasUppercase ? "text-green-500/80" : "text-muted-foreground opacity-40"}`}>
-                                At least one uppercase letter
-                            </span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            {hasSpecial ? <CheckCircle2 className="w-3 h-3 text-green-500" /> : <AlertCircle className="w-3 h-3 text-muted-foreground opacity-40" />}
-                            <span className={`text-[9px] font-bold uppercase tracking-wider ${hasSpecial ? "text-green-500/80" : "text-muted-foreground opacity-40"}`}>
-                                At least one special character
-                            </span>
                         </div>
                     </div>
 

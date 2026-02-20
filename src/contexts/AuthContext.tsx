@@ -4,19 +4,19 @@ export type UserRole = "student" | "driver" | "admin";
 
 interface User {
   name: string;
-  email: string;
+  email?: string;
   role: UserRole;
   studentId?: string;
   busNumber: string;
   route?: string;
-  password?: string; // Added for admin view requirement
+  password?: string;
 }
 
 interface AuthContextType {
   user: User | null;
-  login: (email: string, password: string, role: UserRole) => boolean;
+  login: (id: string, password: string, role: UserRole) => boolean;
   logout: () => void;
-  registerUser: (userData: { name: string; identifier: string; password: string; role: UserRole }) => { success: boolean; message?: string };
+  registerUser: (name: string, id: string, password: string, role: UserRole) => boolean;
   students: User[];
 }
 
@@ -35,15 +35,15 @@ const MOCK_USERS: Record<UserRole, User> = {
     name: "Rajesh M",
     email: "rajesh@gmail.com",
     role: "driver",
+    studentId: "DRV-101",
     busNumber: "TN-01-1234",
-    password: "Driver@123!",
   },
   admin: {
     name: "Dr. Priya S",
     email: "admin@gmail.com",
     role: "admin",
+    studentId: "ADM-001",
     busNumber: "",
-    password: "Admin@123!",
   },
 };
 
@@ -67,48 +67,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return [];
   });
 
-  const validatePassword = (pass: string) => {
-    const hasUppercase = /[A-Z]/.test(pass);
-    const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(pass);
-    return hasUppercase && hasSpecial;
-  };
-
-  const GMAIL_DOMAIN = "@gmail.com";
-
-  const registerUser = (userData: { name: string; identifier: string; password: string; role: UserRole }) => {
-    const { name, identifier, password, role } = userData;
-
-    if (!validatePassword(password)) {
-      console.error("Password too weak.");
-      return { success: false, message: "Password must contain one uppercase and one special character." };
-    }
-
-    if (role !== "student" && !identifier.endsWith(GMAIL_DOMAIN)) {
-      return { success: false, message: `Only ${GMAIL_DOMAIN} addresses are authorized for this role.` };
-    }
-
+  const registerUser = (name: string, id: string, password: string, role: UserRole) => {
     const newUser: User = {
       name,
-      email: role === "student" ? "not-set@gmail.com" : identifier,
       role,
-      studentId: role === "student" ? identifier : undefined,
+      studentId: id,
       password,
-      busNumber: "Not Assigned",
-      route: role === "student" ? "Not Assigned" : undefined
+      busNumber: role === "driver" ? "TN-01-1234" : "Not Assigned",
+      route: "Not Assigned"
     };
 
     const updatedUsers = [...registeredUsers, newUser];
     setRegisteredUsers(updatedUsers);
     localStorage.setItem("registeredUsers", JSON.stringify(updatedUsers));
-    return { success: true };
+    return true;
   };
 
-  const login = (identifier: string, password: string, role: UserRole) => {
-    // 1. Check registered users
-    const foundUser = registeredUsers.find(u =>
-      u.role === role &&
-      (role === "student" ? u.studentId === identifier : u.email === identifier) &&
-      u.password === password
+  const login = (id: string, password: string, role: UserRole) => {
+    // Check registered users pool
+    const foundUser = registeredUsers.find(
+      (u) => u.role === role && u.studentId === id && u.password === password
     );
 
     if (foundUser) {
@@ -117,22 +95,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       return true;
     }
 
-    // 2. Check MOCK_USERS
-    if (role === "student") {
-      if (identifier === "student" && password === "pass") {
-        const mock = MOCK_USERS["student"];
-        setUser(mock);
-        localStorage.setItem("currentUser", JSON.stringify(mock));
-        return true;
-      }
-    } else {
-      if (!identifier.endsWith(GMAIL_DOMAIN)) {
-        console.error(`Access denied: Only ${GMAIL_DOMAIN} email addresses are allowed.`);
-        return false;
-      }
-
-      const mockUser = MOCK_USERS[role];
-      if (mockUser.email === identifier && mockUser.password === password) {
+    // fallback to Mock users
+    const mockUser = MOCK_USERS[role];
+    if (mockUser.studentId === id) {
+      // For mock roles, password matches role name by default or specific rule
+      const mockPass = role === "student" ? "pass" : role;
+      if (password === mockPass || (mockUser as any).password === password) {
         setUser(mockUser);
         localStorage.setItem("currentUser", JSON.stringify(mockUser));
         return true;
