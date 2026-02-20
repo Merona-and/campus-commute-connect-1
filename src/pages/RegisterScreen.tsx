@@ -36,7 +36,6 @@ const RegisterScreen = () => {
         }
 
         setLoading(true);
-        // Simulate network delay
         setTimeout(() => {
             const success = registerStudent(name, rollNumber, password);
             setLoading(false);
@@ -57,82 +56,90 @@ const RegisterScreen = () => {
     };
 
     return (
-        <div className="min-h-screen flex flex-col">
+        <div className="min-h-screen flex flex-col bg-background selection:bg-amber-500/30">
             {/* Hero */}
-            <div className="relative h-48 overflow-hidden">
-                <img src={splashBg} alt="Campus" className="w-full h-full object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-b from-primary/60 to-primary/90 flex flex-col items-center justify-center text-primary-foreground">
-                    <Bus className="w-10 h-10 mb-2" />
-                    <h1 className="text-xl font-bold tracking-tight">Student Registration</h1>
-                    <p className="text-sm opacity-90">Join Campus Commute Connect</p>
+            <div className="relative h-64 overflow-hidden flex-shrink-0">
+                <img src={splashBg} alt="Campus" className="w-full h-full object-cover scale-110 blur-[2px] opacity-40" />
+                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-white px-8">
+                    <div className="w-20 h-20 rounded-[2.5rem] glass-premium flex items-center justify-center mb-6 shadow-2xl relative rotate-[-6deg] hover:rotate-0 transition-transform duration-500">
+                        <div className="absolute inset-0 bg-amber-500/20 blur-2xl rounded-full animate-pulse" />
+                        <Bus className="w-10 h-10 text-amber-400 relative z-10" />
+                    </div>
+                    <h1 className="text-3xl font-black tracking-tighter glow-text text-center leading-none mb-2">STUDENT<br />ENROLLMENT</h1>
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-amber-400/80">Join Campus Commute Connect</p>
                 </div>
             </div>
 
-            {/* Form */}
-            <div className="flex-1 -mt-6 bg-background/85 backdrop-blur-md rounded-t-3xl px-6 pt-8 pb-6">
-                <div className="flex justify-center mb-6">
-                    <div className="bg-primary/10 p-3 rounded-full">
-                        <User className="w-8 h-8 text-primary" />
+            {/* Form Container */}
+            <div className="flex-1 -mt-10 rounded-t-[3rem] px-8 pt-10 pb-12 glass-premium border-t border-white/10 relative z-10 shadow-[0_-20px_50px_rgba(0,0,0,0.5)]">
+                <div className="flex flex-col items-center mb-10">
+                    <div className="w-16 h-16 mb-4 rounded-3xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center shadow-inner">
+                        <User className="w-8 h-8 text-amber-400" />
                     </div>
+                    <h2 className="text-2xl font-black text-foreground tracking-tight">Create Identity</h2>
+                    <p className="text-sm text-muted-foreground font-medium opacity-60">Initialize your student profile</p>
                 </div>
 
-                <form onSubmit={handleRegister} className="space-y-4">
-                    <div>
-                        <label className="text-sm font-medium text-muted-foreground mb-1 block">Full Name</label>
+                <form onSubmit={handleRegister} className="space-y-6">
+                    <div className="space-y-2">
+                        <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest px-1 opacity-60">Legal Full Name</label>
                         <input
                             type="text"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                             placeholder="John Doe"
-                            className="w-full px-4 py-3 rounded-xl border border-input bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                            className="w-full h-14 px-5 rounded-2xl border border-white/5 bg-white/5 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500/40 transition-all font-medium"
                         />
                     </div>
 
-                    <div>
-                        <label className="text-sm font-medium text-muted-foreground mb-1 block">Roll Number (Student ID)</label>
+                    <div className="space-y-2">
+                        <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest px-1 opacity-60">Identification ID</label>
                         <input
                             type="text"
                             value={rollNumber}
                             onChange={(e) => setRollNumber(e.target.value)}
                             placeholder="RA211100..."
-                            className="w-full px-4 py-3 rounded-xl border border-input bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                            className="w-full h-14 px-5 rounded-2xl border border-white/5 bg-white/5 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500/40 transition-all font-medium"
                         />
                     </div>
 
-                    <div>
-                        <label className="text-sm font-medium text-muted-foreground mb-1 block">Password</label>
-                        <input
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            placeholder="••••••••"
-                            className="w-full px-4 py-3 rounded-xl border border-input bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-                        />
-                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest px-1 opacity-60">Passkey</label>
+                            <input
+                                type="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                placeholder="••••••••"
+                                className="w-full h-14 px-5 rounded-2xl border border-white/5 bg-white/5 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500/40 transition-all font-medium"
+                            />
+                        </div>
 
-                    <div>
-                        <label className="text-sm font-medium text-muted-foreground mb-1 block">Confirm Password</label>
-                        <input
-                            type="password"
-                            value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
-                            placeholder="••••••••"
-                            className="w-full px-4 py-3 rounded-xl border border-input bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-                        />
+                        <div className="space-y-2">
+                            <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest px-1 opacity-60">Verify Key</label>
+                            <input
+                                type="password"
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                placeholder="••••••••"
+                                className="w-full h-14 px-5 rounded-2xl border border-white/5 bg-white/5 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500/40 transition-all font-medium"
+                            />
+                        </div>
                     </div>
 
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full py-3.5 rounded-xl bg-primary text-primary-foreground font-bold text-base transition-all hover:opacity-90 disabled:opacity-60 mt-4"
+                        className="w-full h-14 mt-6 rounded-2xl font-black text-xs uppercase tracking-[0.2em] transition-all hover:brightness-110 active:scale-[0.98] text-white shadow-2xl shadow-amber-500/20 bg-gradient-to-r from-amber-500 to-orange-600 disabled:opacity-50"
                     >
-                        {loading ? "Creating Account..." : "Register"}
+                        {loading ? "Registering Sequence..." : "Confirm Enrollment"}
                     </button>
 
-                    <p className="text-center text-sm text-muted-foreground mt-4">
-                        Already have an account?{" "}
-                        <Link to="/" className="text-primary font-medium cursor-pointer hover:underline">
-                            Sign In here
+                    <p className="text-center text-sm font-medium text-muted-foreground opacity-60">
+                        Already registered?{" "}
+                        <Link to="/" className="text-amber-500 font-black hover:underline tracking-tight">
+                            SIGN IN HERE
                         </Link>
                     </p>
                 </form>

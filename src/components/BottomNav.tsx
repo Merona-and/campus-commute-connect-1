@@ -14,18 +14,29 @@ const tabs: { id: string; label: string; icon: ReactNode }[] = [
 ];
 
 const BottomNav = ({ active, onNavigate }: BottomNavProps) => (
-  <nav className="fixed bottom-0 left-0 right-0 bg-card border-t border-border px-2 py-2 flex justify-around z-50">
+  <nav
+    className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-md px-4 py-3 flex justify-around items-center z-50 rounded-[2rem] glass-premium shadow-2xl transition-all duration-300 hover:w-[92%]"
+  >
     {tabs.map((tab) => (
       <button
         key={tab.id}
         onClick={() => onNavigate(tab.id)}
-        className={`bottom-nav-item ${active === tab.id ? "active text-primary" : ""}`}
+        className={`bottom-nav-item relative px-4 py-2 rounded-2xl transition-all duration-300 ${active === tab.id ? "active bg-white/5 shadow-inner" : "opacity-60 hover:opacity-100 hover:bg-white/5"}`}
       >
-        {tab.icon}
-        <span>{tab.label}</span>
+        {active === tab.id && (
+          <span
+            className="absolute -top-1 left-1/2 -translate-x-1/2 w-4 h-1 rounded-full bg-primary shadow-[0_0_12px_hsl(262,83%,65%)]"
+          />
+        )}
+        <div className={`relative transition-transform duration-300 ${active === tab.id ? "scale-110" : ""}`}>
+          {tab.icon}
+        </div>
+        <span className={`text-[10px] font-black uppercase tracking-widest mt-1 transition-all duration-300 ${active === tab.id ? "opacity-100" : "opacity-0 scale-75"}`}>
+          {tab.label}
+        </span>
       </button>
     ))}
-  </nav>
+  </nav >
 );
 
 export default BottomNav;
