@@ -16,7 +16,7 @@ interface AuthContextType {
   user: User | null;
   login: (email: string, password: string, role: UserRole) => boolean;
   logout: () => void;
-  registerStudent: (name: string, rollNumber: string, password: string) => boolean;
+  registerUser: (userData: { name: string; identifier: string; password: string; role: UserRole }) => { success: boolean; message?: string };
   students: User[];
 }
 
@@ -25,7 +25,7 @@ const AuthContext = createContext<AuthContextType | null>(null);
 const MOCK_USERS: Record<UserRole, User> = {
   student: {
     name: "Arun Kumar",
-    email: "arun@college.edu",
+    email: "arun@gmail.com",
     role: "student",
     studentId: "STU-2024-0142",
     busNumber: "TN-01-1234",
@@ -33,17 +33,17 @@ const MOCK_USERS: Record<UserRole, User> = {
   },
   driver: {
     name: "Rajesh M",
-    email: "rajesh@college.edu",
+    email: "rajesh@gmail.com",
     role: "driver",
     busNumber: "TN-01-1234",
-    password: "driver@123",
+    password: "Driver@123!",
   },
   admin: {
     name: "Dr. Priya S",
-    email: "admin@college.edu",
+    email: "admin@gmail.com",
     role: "admin",
     busNumber: "",
-    password: "admin@123",
+    password: "Admin@123!",
   },
 };
 
@@ -53,50 +53,81 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return savedUser ? JSON.parse(savedUser) : null;
   });
 
-  const [students, setStudents] = useState<User[]>(() => {
-    const savedStudents = localStorage.getItem("registeredStudents");
-    return savedStudents ? JSON.parse(savedStudents) : [];
+  const [registeredUsers, setRegisteredUsers] = useState<User[]>(() => {
+    const saved = localStorage.getItem("registeredUsers");
+    if (saved) return JSON.parse(saved);
+    // Migration: check old registeredStudents
+    const oldStudents = localStorage.getItem("registeredStudents");
+    if (oldStudents) {
+      const parsed = JSON.parse(oldStudents);
+      localStorage.setItem("registeredUsers", oldStudents);
+      localStorage.removeItem("registeredStudents");
+      return parsed;
+    }
+    return [];
   });
 
-  const registerStudent = (name: string, rollNumber: string, password: string) => {
-    const newStudent: User = {
-      name,
-      email: rollNumber,
-      role: "student",
-      studentId: rollNumber,
-      password,
-      busNumber: "Not Assigned",
-      route: "Not Assigned"
-    };
-
-    const updatedStudents = [...students, newStudent];
-    setStudents(updatedStudents);
-    localStorage.setItem("registeredStudents", JSON.stringify(updatedStudents));
-    return true;
+  const validatePassword = (pass: string) => {
+    const hasUppercase = /[A-Z]/.test(pass);
+    const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(pass);
+    return hasUppercase && hasSpecial;
   };
 
-  const COLLEGE_DOMAIN = "@college.edu";
+  const GMAIL_DOMAIN = "@gmail.com";
+
+  const registerUser = (userData: { name: string; identifier: string; password: string; role: UserRole }) => {
+    const { name, identifier, password, role } = userData;
+
+    if (!validatePassword(password)) {
+      console.error("Password too weak.");
+      return { success: false, message: "Password must contain one uppercase and one special character." };
+    }
+
+    if (role !== "student" && !identifier.endsWith(GMAIL_DOMAIN)) {
+      return { success: false, message: `Only ${GMAIL_DOMAIN} addresses are authorized for this role.` };
+    }
+
+    const newUser: User = {
+      name,
+      email: role === "student" ? "not-set@gmail.com" : identifier,
+      role,
+      studentId: role === "student" ? identifier : undefined,
+      password,
+      busNumber: "Not Assigned",
+      route: role === "student" ? "Not Assigned" : undefined
+    };
+
+    const updatedUsers = [...registeredUsers, newUser];
+    setRegisteredUsers(updatedUsers);
+    localStorage.setItem("registeredUsers", JSON.stringify(updatedUsers));
+    return { success: true };
+  };
 
   const login = (identifier: string, password: string, role: UserRole) => {
-    if (role === "student") {
-      const student = students.find(s => s.studentId === identifier && s.password === password);
-      if (student) {
-        setUser(student);
-        localStorage.setItem("currentUser", JSON.stringify(student));
-        return true;
-      }
+    // 1. Check registered users
+    const foundUser = registeredUsers.find(u =>
+      u.role === role &&
+      (role === "student" ? u.studentId === identifier : u.email === identifier) &&
+      u.password === password
+    );
 
+    if (foundUser) {
+      setUser(foundUser);
+      localStorage.setItem("currentUser", JSON.stringify(foundUser));
+      return true;
+    }
+
+    // 2. Check MOCK_USERS
+    if (role === "student") {
       if (identifier === "student" && password === "pass") {
         const mock = MOCK_USERS["student"];
         setUser(mock);
         localStorage.setItem("currentUser", JSON.stringify(mock));
         return true;
       }
-      return false;
     } else {
-      // Driver or Admin authentication
-      if (!identifier.endsWith(COLLEGE_DOMAIN)) {
-        console.error(`Access denied: Only ${COLLEGE_DOMAIN} email addresses are allowed.`);
+      if (!identifier.endsWith(GMAIL_DOMAIN)) {
+        console.error(`Access denied: Only ${GMAIL_DOMAIN} email addresses are allowed.`);
         return false;
       }
 
@@ -106,8 +137,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         localStorage.setItem("currentUser", JSON.stringify(mockUser));
         return true;
       }
-      return false;
     }
+
+    return false;
   };
 
   const logout = () => {
@@ -116,7 +148,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, registerStudent, students }}>
+    <AuthContext.Provider value={{ user, login, logout, registerUser, students: registeredUsers.filter(u => u.role === "student") }}>
       {children}
     </AuthContext.Provider>
   );
