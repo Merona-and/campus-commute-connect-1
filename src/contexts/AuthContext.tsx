@@ -29,7 +29,7 @@ const MOCK_USERS: Record<UserRole, User> = {
     role: "student",
     studentId: "STU-2024-0142",
     busNumber: "TN-01-1234",
-    route: "Central Campus → Sector 5 → Main Gate",
+    route: "Central Campus -> Sector 5 -> Main Gate",
   },
   driver: {
     name: "Rajesh M",

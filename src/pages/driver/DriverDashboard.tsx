@@ -22,7 +22,7 @@ const DriverDashboard = () => {
       <div className="flex items-center justify-between mb-5">
         <div>
           <p className="text-sm text-muted-foreground">{greeting}</p>
-          <h1 className="text-2xl font-extrabold text-foreground">{user?.name ?? "Driver"} 🚌</h1>
+          <h1 className="text-2xl font-extrabold text-foreground">{user?.name ?? "Driver"}</h1>
         </div>
         <button
           onClick={logout}
@@ -114,8 +114,8 @@ const DriverDashboard = () => {
                 </div>
               </div>
               <span className={`status-badge text-xs ${item.done === true ? "status-active" :
-                  item.done === null ? "text-amber-400" :
-                    "text-muted-foreground"
+                item.done === null ? "text-amber-400" :
+                  "text-muted-foreground"
                 }`}
                 style={item.done === null ? { background: 'hsl(35 100% 55% / 0.12)', border: '1px solid hsl(35 100% 55% / 0.3)' } :
                   item.done === false ? { background: 'hsl(240 12% 14%)', border: '1px solid hsl(262 30% 22%)' } : {}}

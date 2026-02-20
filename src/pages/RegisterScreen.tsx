@@ -56,88 +56,90 @@ const RegisterScreen = () => {
     };
 
     return (
-        <div className="min-h-screen flex flex-col">
+        <div className="min-h-screen flex flex-col bg-background selection:bg-amber-500/30">
             {/* Hero */}
-            <div className="relative h-52 overflow-hidden">
-                <img src={splashBg} alt="Campus" className="w-full h-full object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-b from-violet-950/70 via-purple-950/85 to-[hsl(240,15%,6%)] flex flex-col items-center justify-center text-white">
-                    <div className="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center mb-3" style={{ boxShadow: '0 0 28px hsl(35 100% 55% / 0.4)' }}>
-                        <Bus className="w-7 h-7 text-amber-300" />
+            <div className="relative h-64 overflow-hidden flex-shrink-0">
+                <img src={splashBg} alt="Campus" className="w-full h-full object-cover scale-110 blur-[2px] opacity-40" />
+                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-white px-8">
+                    <div className="w-20 h-20 rounded-[2.5rem] glass-premium flex items-center justify-center mb-6 shadow-2xl relative rotate-[-6deg] hover:rotate-0 transition-transform duration-500">
+                        <div className="absolute inset-0 bg-amber-500/20 blur-2xl rounded-full animate-pulse" />
+                        <Bus className="w-10 h-10 text-amber-400 relative z-10" />
                     </div>
-                    <h1 className="text-xl font-bold tracking-tight">Student Registration</h1>
-                    <p className="text-sm text-amber-300 mt-1">Join Campus Commute Connect</p>
+                    <h1 className="text-3xl font-black tracking-tighter glow-text text-center leading-none mb-2">STUDENT<br />ENROLLMENT</h1>
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-amber-400/80">Join Campus Commute Connect</p>
                 </div>
             </div>
 
-            {/* Form */}
-            <div className="flex-1 -mt-6 rounded-t-3xl px-6 pt-8 pb-6" style={{ background: 'hsl(240 15% 6%)', borderTop: '1px solid hsl(262 30% 22%)' }}>
-                <div className="flex justify-center mb-6">
-                    <div className="p-3 rounded-2xl" style={{ background: 'hsl(35 100% 55% / 0.15)', border: '1px solid hsl(35 100% 55% / 0.3)', boxShadow: '0 0 20px hsl(35 100% 55% / 0.15)' }}>
+            {/* Form Container */}
+            <div className="flex-1 -mt-10 rounded-t-[3rem] px-8 pt-10 pb-12 glass-premium border-t border-white/10 relative z-10 shadow-[0_-20px_50px_rgba(0,0,0,0.5)]">
+                <div className="flex flex-col items-center mb-10">
+                    <div className="w-16 h-16 mb-4 rounded-3xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center shadow-inner">
                         <User className="w-8 h-8 text-amber-400" />
                     </div>
+                    <h2 className="text-2xl font-black text-foreground tracking-tight">Create Identity</h2>
+                    <p className="text-sm text-muted-foreground font-medium opacity-60">Initialize your student profile</p>
                 </div>
 
-                <h2 className="text-xl font-bold mb-1 text-foreground text-center">Create Account</h2>
-                <p className="text-sm text-muted-foreground mb-6 text-center">Fill in your details to register</p>
-
-                <form onSubmit={handleRegister} className="space-y-4">
-                    <div>
-                        <label className="text-sm font-medium text-muted-foreground mb-1.5 block">Full Name</label>
+                <form onSubmit={handleRegister} className="space-y-6">
+                    <div className="space-y-2">
+                        <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest px-1 opacity-60">Legal Full Name</label>
                         <input
                             type="text"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                             placeholder="John Doe"
-                            className="w-full px-4 py-3 rounded-xl border border-input bg-muted text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 transition-all"
+                            className="w-full h-14 px-5 rounded-2xl border border-white/5 bg-white/5 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500/40 transition-all font-medium"
                         />
                     </div>
 
-                    <div>
-                        <label className="text-sm font-medium text-muted-foreground mb-1.5 block">Roll Number (Student ID)</label>
+                    <div className="space-y-2">
+                        <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest px-1 opacity-60">Identification ID</label>
                         <input
                             type="text"
                             value={rollNumber}
                             onChange={(e) => setRollNumber(e.target.value)}
                             placeholder="RA211100..."
-                            className="w-full px-4 py-3 rounded-xl border border-input bg-muted text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 transition-all"
+                            className="w-full h-14 px-5 rounded-2xl border border-white/5 bg-white/5 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500/40 transition-all font-medium"
                         />
                     </div>
 
-                    <div>
-                        <label className="text-sm font-medium text-muted-foreground mb-1.5 block">Password</label>
-                        <input
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            placeholder="••••••••"
-                            className="w-full px-4 py-3 rounded-xl border border-input bg-muted text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 transition-all"
-                        />
-                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest px-1 opacity-60">Passkey</label>
+                            <input
+                                type="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                placeholder="••••••••"
+                                className="w-full h-14 px-5 rounded-2xl border border-white/5 bg-white/5 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500/40 transition-all font-medium"
+                            />
+                        </div>
 
-                    <div>
-                        <label className="text-sm font-medium text-muted-foreground mb-1.5 block">Confirm Password</label>
-                        <input
-                            type="password"
-                            value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
-                            placeholder="••••••••"
-                            className="w-full px-4 py-3 rounded-xl border border-input bg-muted text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 transition-all"
-                        />
+                        <div className="space-y-2">
+                            <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest px-1 opacity-60">Verify Key</label>
+                            <input
+                                type="password"
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                placeholder="••••••••"
+                                className="w-full h-14 px-5 rounded-2xl border border-white/5 bg-white/5 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500/40 transition-all font-medium"
+                            />
+                        </div>
                     </div>
 
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full py-3.5 rounded-xl font-bold text-base transition-all hover:opacity-90 disabled:opacity-60 text-white mt-4"
-                        style={{ background: 'linear-gradient(135deg, hsl(35 100% 55%), hsl(20 100% 50%))', boxShadow: '0 4px 20px hsl(35 100% 55% / 0.35)' }}
+                        className="w-full h-14 mt-6 rounded-2xl font-black text-xs uppercase tracking-[0.2em] transition-all hover:brightness-110 active:scale-[0.98] text-white shadow-2xl shadow-amber-500/20 bg-gradient-to-r from-amber-500 to-orange-600 disabled:opacity-50"
                     >
-                        {loading ? "Creating Account..." : "Register"}
+                        {loading ? "Registering Sequence..." : "Confirm Enrollment"}
                     </button>
 
-                    <p className="text-center text-sm text-muted-foreground mt-4">
-                        Already have an account?{" "}
-                        <Link to="/" className="text-violet-400 font-medium cursor-pointer hover:text-violet-300 hover:underline">
-                            Sign In here
+                    <p className="text-center text-sm font-medium text-muted-foreground opacity-60">
+                        Already registered?{" "}
+                        <Link to="/" className="text-amber-500 font-black hover:underline tracking-tight">
+                            SIGN IN HERE
                         </Link>
                     </p>
                 </form>

@@ -29,10 +29,10 @@ const ProfileScreen = () => {
       {/* Info Card */}
       <div className="rounded-2xl border overflow-hidden" style={{ background: 'hsl(240 12% 10%)', borderColor: 'hsl(262 30% 22%)' }}>
         {[
-          { icon: <User className="w-4 h-4" />, label: "Full Name", value: user?.name ?? "—" },
-          { icon: <CreditCard className="w-4 h-4" />, label: "Student ID", value: user?.studentId ?? "—" },
-          { icon: <Bus className="w-4 h-4" />, label: "Bus Number", value: user?.busNumber ?? "—" },
-          { icon: <MapPin className="w-4 h-4" />, label: "Route", value: user?.route ?? "—" },
+          { icon: <User className="w-4 h-4" />, label: "Full Name", value: user?.name ?? "Not Assigned" },
+          { icon: <CreditCard className="w-4 h-4" />, label: "Student ID", value: user?.studentId ?? "Not Assigned" },
+          { icon: <Bus className="w-4 h-4" />, label: "Bus Number", value: user?.busNumber ?? "Not Assigned" },
+          { icon: <MapPin className="w-4 h-4" />, label: "Route", value: user?.route ?? "Not Assigned" },
         ].map((item, i, arr) => (
           <div
             key={item.label}
