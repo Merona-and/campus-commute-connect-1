@@ -25,7 +25,15 @@ const LoginScreen = () => {
       setLoading(false);
       if (!success) {
         console.error("Login failed");
-        alert("Invalid credentials! If you are a student, please ensure you are registered.");
+        if (role === "student") {
+          alert("Invalid Identification Number or Password! Please ensure you are registered.");
+        } else {
+          if (!email.endsWith("@college.edu")) {
+            alert("External email detected. Only @college.edu addresses are authorized for this role.");
+          } else {
+            alert("Authentication failed. Please check your credentials.");
+          }
+        }
       }
     }, 800);
   };
@@ -62,7 +70,11 @@ const LoginScreen = () => {
           {roles.map((r) => (
             <button
               key={r.value}
-              onClick={() => setRole(r.value)}
+              onClick={() => {
+                setRole(r.value);
+                setEmail(""); // Reset email when switching roles to prevent crossover
+                setPassword("");
+              }}
               className={`flex flex-col items-center gap-2 py-4 rounded-2xl border transition-all duration-300 ${role === r.value
                 ? "border-primary bg-primary/10 text-primary shadow-[0_0_20px_rgba(168,85,247,0.15)] scale-[1.02]"
                 : "border-white/5 bg-white/5 text-muted-foreground hover:bg-white/10 hover:border-white/10"
@@ -79,13 +91,13 @@ const LoginScreen = () => {
         <form onSubmit={handleLogin} className="space-y-5">
           <div className="space-y-2">
             <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest px-1 opacity-60">
-              {role === "student" ? "Identification Number" : "Administrator Email"}
+              {role === "student" ? "Identification Number" : `${role.charAt(0).toUpperCase() + role.slice(1)} Email`}
             </label>
             <input
               type={role === "student" ? "text" : "email"}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder={role === "student" ? "RA21..." : "your@college.edu"}
+              placeholder={role === "student" ? "RA21..." : "example@college.edu"}
               className="w-full h-14 px-5 rounded-2xl border border-white/5 bg-white/5 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary/40 transition-all font-medium"
             />
           </div>

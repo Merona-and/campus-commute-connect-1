@@ -36,12 +36,14 @@ const MOCK_USERS: Record<UserRole, User> = {
     email: "rajesh@college.edu",
     role: "driver",
     busNumber: "TN-01-1234",
+    password: "driver@123",
   },
   admin: {
     name: "Dr. Priya S",
     email: "admin@college.edu",
     role: "admin",
     busNumber: "",
+    password: "admin@123",
   },
 };
 
@@ -73,6 +75,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return true;
   };
 
+  const COLLEGE_DOMAIN = "@college.edu";
+
   const login = (identifier: string, password: string, role: UserRole) => {
     if (role === "student") {
       const student = students.find(s => s.studentId === identifier && s.password === password);
@@ -90,10 +94,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
       return false;
     } else {
+      // Driver or Admin authentication
+      if (!identifier.endsWith(COLLEGE_DOMAIN)) {
+        console.error(`Access denied: Only ${COLLEGE_DOMAIN} email addresses are allowed.`);
+        return false;
+      }
+
       const mockUser = MOCK_USERS[role];
-      setUser(mockUser);
-      localStorage.setItem("currentUser", JSON.stringify(mockUser));
-      return true;
+      if (mockUser.email === identifier && mockUser.password === password) {
+        setUser(mockUser);
+        localStorage.setItem("currentUser", JSON.stringify(mockUser));
+        return true;
+      }
+      return false;
     }
   };
 
