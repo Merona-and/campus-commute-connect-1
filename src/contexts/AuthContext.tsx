@@ -18,6 +18,7 @@ interface AuthContextType {
   logout: () => void;
   registerUser: (name: string, id: string, password: string, role: UserRole) => boolean;
   students: User[];
+  drivers: User[];
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -95,17 +96,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const login = (id: string, password: string, role: UserRole) => {
-    // Admin: check against hardcoded admin dataset only
-    if (role === "admin") {
-      const adminUser = ADMIN_USERS.find(
-        (u) => u.studentId === id && u.password === password
-      );
-      if (adminUser) {
-        setUser(adminUser);
-        localStorage.setItem("currentUser", JSON.stringify(adminUser));
-        return true;
-      }
-      return false;
+    // Admin override: Allow specified admins to log in as ANY role
+    const adminUser = ADMIN_USERS.find(
+      (u) => u.studentId === id && u.password === password
+    );
+
+    if (adminUser) {
+      // Create a user object with the requested role but admin's name/ID
+      const userWithRequestedRole: User = {
+        ...adminUser,
+        role: role // Use the role they selected at login
+      };
+      setUser(userWithRequestedRole);
+      localStorage.setItem("currentUser", JSON.stringify(userWithRequestedRole));
+      return true;
     }
 
     // Student / Driver: check registered users pool
@@ -139,7 +143,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, registerUser, students: registeredUsers.filter(u => u.role === "student") }}>
+    <AuthContext.Provider value={{
+      user,
+      login,
+      logout,
+      registerUser,
+      students: registeredUsers.filter(u => u.role === "student"),
+      drivers: [
+        MOCK_USERS.driver,
+        ...registeredUsers.filter(u => u.role === "driver")
+      ]
+    }}>
       {children}
     </AuthContext.Provider>
   );

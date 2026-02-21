@@ -20,7 +20,7 @@ const paymentRecords = [
 type AdminTab = "overview" | "buses" | "students" | "payments";
 
 const AdminDashboard = () => {
-  const { user, logout, students } = useAuth();
+  const { user, logout, students, drivers } = useAuth();
   const [tab, setTab] = useState<AdminTab>("overview");
 
   const activeBuses = buses.filter((b) => b.status === "active").length;
@@ -128,27 +128,45 @@ const AdminDashboard = () => {
         )}
 
         {tab === "buses" && (
-          <div className="space-y-3 animate-fade-in">
-            <h2 className="text-lg font-bold text-foreground">All Buses</h2>
-            {buses.map((bus) => (
-              <div key={bus.id} className="rounded-xl p-4 border" style={{ background: 'hsl(240 12% 10%)', borderColor: 'hsl(262 30% 22%)' }}>
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: 'hsl(262 83% 65% / 0.15)', border: '1px solid hsl(262 83% 65% / 0.25)' }}>
-                      <Bus className="w-5 h-5 text-violet-400" />
+          <div className="space-y-4 animate-fade-in">
+            <h2 className="text-lg font-bold text-foreground">Bus Fleet & Driver Access</h2>
+            <div className="grid gap-4">
+              {drivers.map((driver, idx) => {
+                const bus = buses.find(b => b.driver === driver.name) || { id: "N/A", number: "Not Assigned", status: "stopped" };
+                return (
+                  <div key={idx} className="rounded-xl p-4 border" style={{ background: 'hsl(240 12% 10%)', borderColor: 'hsl(262 30% 22%)' }}>
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: 'hsl(262 83% 65% / 0.15)', border: '1px solid hsl(262 83% 65% / 0.25)' }}>
+                          <Bus className="w-5 h-5 text-violet-400" />
+                        </div>
+                        <div>
+                          <p className="font-bold text-foreground">{driver.name}</p>
+                          <p className="text-xs text-muted-foreground">Bus: {bus.number} ({bus.id})</p>
+                        </div>
+                      </div>
+                      <span className={`status-badge ${bus.status === "active" ? "status-active" : bus.status === "delayed" ? "status-delayed" : "bg-muted text-muted-foreground"}`}>
+                        {bus.status === "active" ? "On Time" : bus.status === "delayed" ? "Delayed" : "Offline"}
+                      </span>
                     </div>
-                    <div>
-                      <p className="font-bold text-foreground">Bus {bus.id}</p>
-                      <p className="text-xs text-muted-foreground">{bus.number}</p>
+
+                    <div className="p-3 rounded-lg text-xs" style={{ background: 'hsl(240 15% 7%)', border: '1px solid hsl(262 30% 18%)' }}>
+                      <p className="text-violet-300 font-bold uppercase tracking-wider mb-2" style={{ fontSize: '10px' }}>Driver Authentication</p>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <p className="text-muted-foreground mb-1">Sign-in ID</p>
+                          <p className="font-mono text-foreground bg-white/5 p-1.5 rounded border border-white/10">{driver.studentId}</p>
+                        </div>
+                        <div>
+                          <p className="text-muted-foreground mb-1">Security Key</p>
+                          <p className="font-mono text-foreground bg-white/5 p-1.5 rounded border border-white/10">{driver.password || "driver"}</p>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                  <span className={`status-badge ${bus.status === "active" ? "status-active" : bus.status === "delayed" ? "status-delayed" : "bg-muted text-muted-foreground"}`}>
-                    {bus.status === "active" ? "On Time" : bus.status === "delayed" ? "Delayed" : "Stopped"}
-                  </span>
-                </div>
-                <p className="text-xs text-muted-foreground">Driver: {bus.driver}</p>
-              </div>
-            ))}
+                );
+              })}
+            </div>
           </div>
         )}
 
