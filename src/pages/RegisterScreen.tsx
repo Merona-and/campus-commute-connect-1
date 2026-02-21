@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuth, UserRole } from "@/contexts/AuthContext";
-import { Bus, User, Shield } from "lucide-react";
+import { Bus, User } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import splashBg from "@/assets/splash-bg.jpg";
 import { useToast } from "@/components/ui/use-toast";
@@ -8,7 +8,6 @@ import { useToast } from "@/components/ui/use-toast";
 const roles: { value: UserRole; label: string; icon: React.ReactNode }[] = [
     { value: "student", label: "Student", icon: <User className="w-5 h-5" /> },
     { value: "driver", label: "Driver", icon: <Bus className="w-5 h-5" /> },
-    { value: "admin", label: "Admin", icon: <Shield className="w-5 h-5" /> },
 ];
 
 const RegisterScreen = () => {

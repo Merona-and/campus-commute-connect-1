@@ -22,7 +22,25 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-const MOCK_USERS: Record<UserRole, User> = {
+// Hardcoded admin accounts — only these two admins exist
+const ADMIN_USERS: User[] = [
+  {
+    name: "S.PRIYA",
+    role: "admin",
+    studentId: "CCA-001",
+    password: "CAMPUS-CCA1",
+    busNumber: "",
+  },
+  {
+    name: "A.ANU",
+    role: "admin",
+    studentId: "CCA-002",
+    password: "CAMPUS-CCA2",
+    busNumber: "",
+  },
+];
+
+const MOCK_USERS: Record<"student" | "driver", User> = {
   student: {
     name: "Arun Kumar",
     email: "arun@gmail.com",
@@ -37,13 +55,6 @@ const MOCK_USERS: Record<UserRole, User> = {
     role: "driver",
     studentId: "DRV-101",
     busNumber: "TN-01-1234",
-  },
-  admin: {
-    name: "Dr. Priya S",
-    email: "admin@gmail.com",
-    role: "admin",
-    studentId: "ADM-001",
-    busNumber: "",
   },
 };
 
@@ -84,7 +95,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const login = (id: string, password: string, role: UserRole) => {
-    // Check registered users pool
+    // Admin: check against hardcoded admin dataset only
+    if (role === "admin") {
+      const adminUser = ADMIN_USERS.find(
+        (u) => u.studentId === id && u.password === password
+      );
+      if (adminUser) {
+        setUser(adminUser);
+        localStorage.setItem("currentUser", JSON.stringify(adminUser));
+        return true;
+      }
+      return false;
+    }
+
+    // Student / Driver: check registered users pool
     const foundUser = registeredUsers.find(
       (u) => u.role === role && u.studentId === id && u.password === password
     );
@@ -95,10 +119,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       return true;
     }
 
-    // fallback to Mock users
-    const mockUser = MOCK_USERS[role];
-    if (mockUser.studentId === id) {
-      // For mock roles, password matches role name by default or specific rule
+    // Fallback to mock users (student / driver demo accounts)
+    const mockUser = MOCK_USERS[role as "student" | "driver"];
+    if (mockUser && mockUser.studentId === id) {
       const mockPass = role === "student" ? "pass" : role;
       if (password === mockPass || (mockUser as any).password === password) {
         setUser(mockUser);
