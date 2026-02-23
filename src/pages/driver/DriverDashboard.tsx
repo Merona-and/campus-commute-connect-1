@@ -1,6 +1,7 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { Bus, Play, Square, MapPin, LogOut, Clock, Users } from "lucide-react";
 import { useState } from "react";
+import { SosButton } from "@/components/SosButton";
 
 const DriverDashboard = () => {
   const { user, logout } = useAuth();
@@ -24,13 +25,16 @@ const DriverDashboard = () => {
           <p className="text-sm text-muted-foreground">{greeting}</p>
           <h1 className="text-2xl font-extrabold text-foreground">{user?.name ?? "Driver"}</h1>
         </div>
-        <button
-          onClick={logout}
-          className="w-10 h-10 rounded-full flex items-center justify-center transition-all hover:opacity-80"
-          style={{ background: 'hsl(240 12% 14%)', border: '1px solid hsl(262 30% 22%)' }}
-        >
-          <LogOut className="w-4 h-4 text-muted-foreground" />
-        </button>
+        <div className="flex gap-2">
+          <SosButton />
+          <button
+            onClick={logout}
+            className="w-10 h-10 rounded-full flex items-center justify-center transition-all hover:opacity-80"
+            style={{ background: 'hsl(240 12% 14%)', border: '1px solid hsl(262 30% 22%)' }}
+          >
+            <LogOut className="w-4 h-4 text-muted-foreground" />
+          </button>
+        </div>
       </div>
 
       {/* Bus Info */}

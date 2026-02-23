@@ -12,7 +12,7 @@ const roles: { value: UserRole; label: string; icon: React.ReactNode }[] = [
 
 const LoginScreen = () => {
   const { login } = useAuth();
-  const [email, setEmail] = useState("");
+  const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState<UserRole>("student");
   const [loading, setLoading] = useState(false);
@@ -21,11 +21,11 @@ const LoginScreen = () => {
     e.preventDefault();
     setLoading(true);
     setTimeout(() => {
-      const success = login(email, password, role);
+      const success = login(identifier, password, role);
       setLoading(false);
       if (!success) {
         console.error("Login failed");
-        alert("Invalid credentials! If you are a student, please ensure you are registered.");
+        alert("Invalid Identification ID or Password! Please ensure you are registered.");
       }
     }, 800);
   };
@@ -41,7 +41,7 @@ const LoginScreen = () => {
             <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-full animate-pulse" />
             <Bus className="w-10 h-10 text-primary relative z-10 glow-text" />
           </div>
-          <h1 className="text-4xl font-black tracking-tighter glow-text text-center leading-none mb-2">
+          <h1 className="text-4xl font-black tracking-tighter glow-text text-center leading-none mb-2 text-white">
             CAMPUS<br />COMMUTE
           </h1>
           <div className="flex items-center gap-3 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md">
@@ -54,7 +54,7 @@ const LoginScreen = () => {
       <div className="flex-1 -mt-10 rounded-t-[3rem] px-8 pt-10 pb-12 glass-premium border-t border-white/10 relative z-10 shadow-[0_-20px_50px_rgba(0,0,0,0.5)]">
         <div className="space-y-1 mb-8">
           <h2 className="text-2xl font-black text-foreground tracking-tight">Welcome back</h2>
-          <p className="text-sm text-muted-foreground font-medium opacity-60">Authorize to access your dashboard</p>
+          <p className="text-sm text-muted-foreground font-medium opacity-60">Authorize to access your {role} dashboard</p>
         </div>
 
         {/* Role selector */}
@@ -62,7 +62,11 @@ const LoginScreen = () => {
           {roles.map((r) => (
             <button
               key={r.value}
-              onClick={() => setRole(r.value)}
+              onClick={() => {
+                setRole(r.value);
+                setIdentifier(""); // Reset input when switching roles
+                setPassword("");
+              }}
               className={`flex flex-col items-center gap-2 py-4 rounded-2xl border transition-all duration-300 ${role === r.value
                 ? "border-primary bg-primary/10 text-primary shadow-[0_0_20px_rgba(168,85,247,0.15)] scale-[1.02]"
                 : "border-white/5 bg-white/5 text-muted-foreground hover:bg-white/10 hover:border-white/10"
@@ -79,13 +83,14 @@ const LoginScreen = () => {
         <form onSubmit={handleLogin} className="space-y-5">
           <div className="space-y-2">
             <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest px-1 opacity-60">
-              {role === "student" ? "Identification Number" : "Administrator Email"}
+              Identification ID
             </label>
             <input
-              type={role === "student" ? "text" : "email"}
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder={role === "student" ? "RA21..." : "your@college.edu"}
+              type="text"
+              required
+              value={identifier}
+              onChange={(e) => setIdentifier(e.target.value)}
+              placeholder={role === "student" ? "RA21..." : "ADM-001..."}
               className="w-full h-14 px-5 rounded-2xl border border-white/5 bg-white/5 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary/40 transition-all font-medium"
             />
           </div>
@@ -96,6 +101,7 @@ const LoginScreen = () => {
             </div>
             <input
               type="password"
+              required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
@@ -111,16 +117,14 @@ const LoginScreen = () => {
             {loading ? "Establishing Link..." : "Secure Access"}
           </button>
 
-          {role === "student" && (
-            <div className="pt-6 mt-4 border-t border-white/5">
-              <p className="text-center text-sm font-medium text-muted-foreground opacity-60">
-                New to the system?{" "}
-                <Link to="/register" className="text-primary font-black hover:underline tracking-tight">
-                  REGISTER NOW
-                </Link>
-              </p>
-            </div>
-          )}
+          <div className="pt-6 mt-4 border-t border-white/5">
+            <p className="text-center text-sm font-medium text-muted-foreground opacity-60">
+              New to the system?{" "}
+              <Link to="/register" className="text-primary font-black hover:underline tracking-tight">
+                REGISTER NOW
+              </Link>
+            </p>
+          </div>
         </form>
       </div>
     </div>
