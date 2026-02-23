@@ -1,5 +1,6 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { Bus, MapPin, Clock, CheckCircle2, Bell, ChevronRight } from "lucide-react";
+import { SosButton } from "@/components/SosButton";
 
 const StudentHome = () => {
   const { user } = useAuth();
@@ -137,6 +138,11 @@ const StudentHome = () => {
             </button>
           ))}
         </div>
+      </div>
+
+      {/* Floating SOS Button */}
+      <div className="fixed bottom-24 right-6 z-50">
+        <SosButton />
       </div>
     </div>
   );

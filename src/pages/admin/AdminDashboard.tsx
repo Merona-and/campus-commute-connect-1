@@ -17,11 +17,13 @@ const paymentRecords = [
   { name: "Kavitha M", amount: "₹15,000", date: "08 Jan 2026", status: "Paid" },
 ];
 
-type AdminTab = "overview" | "buses" | "students" | "payments";
+type AdminTab = "overview" | "buses" | "students" | "payments" | "emergencies";
 
 const AdminDashboard = () => {
-  const { user, logout, students, drivers } = useAuth();
+  const { user, logout, students, drivers, sosAlerts, resolveSos } = useAuth();
   const [tab, setTab] = useState<AdminTab>("overview");
+
+  const activeAlertsCount = sosAlerts.filter(a => a.status === "active").length;
 
   const activeBuses = buses.filter((b) => b.status === "active").length;
   const delayedBuses = buses.filter((b) => b.status === "delayed").length;
@@ -31,6 +33,18 @@ const AdminDashboard = () => {
     { id: "buses", label: "Buses", icon: <MapPin className="w-4 h-4" /> },
     { id: "students", label: "Students", icon: <Users className="w-4 h-4" /> },
     { id: "payments", label: "Payments", icon: <CreditCard className="w-4 h-4" /> },
+    {
+      id: "emergencies",
+      label: "SOS",
+      icon: (
+        <div className="relative">
+          <AlertTriangle className="w-4 h-4" />
+          {activeAlertsCount > 0 && (
+            <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+          )}
+        </div>
+      )
+    },
   ];
 
   return (
@@ -224,6 +238,59 @@ const AdminDashboard = () => {
                 </div>
               ))}
             </div>
+          </div>
+        )}
+
+        {tab === "emergencies" && (
+          <div className="space-y-4 animate-fade-in">
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-bold text-foreground">Emergency SOS Alerts</h2>
+              <span className="px-2.5 py-1 rounded-full bg-red-500/10 border border-red-500/20 text-red-500 text-[10px] font-black uppercase tracking-widest">
+                {activeAlertsCount} Active
+              </span>
+            </div>
+
+            {sosAlerts.length > 0 ? (
+              <div className="space-y-3">
+                {sosAlerts.map((alert) => (
+                  <div
+                    key={alert.id}
+                    className={`rounded-2xl p-5 border transition-all ${alert.status === "active" ? "bg-red-500/5 border-red-500/30" : "bg-slate-900/50 border-slate-800 opacity-60"}`}
+                  >
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${alert.status === "active" ? "bg-red-500/20 text-red-500" : "bg-slate-800 text-slate-400"}`}>
+                          <AlertTriangle className="w-6 h-6" />
+                        </div>
+                        <div>
+                          <p className="font-black text-foreground text-lg tracking-tight uppercase">{alert.userName}</p>
+                          <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">{alert.userRole} • Bus: {alert.busNumber}</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-xs font-bold text-foreground">{alert.timestamp}</p>
+                        <p className={`text-[10px] font-black uppercase tracking-widest mt-1 ${alert.status === "active" ? "text-red-500" : "text-emerald-500"}`}>
+                          {alert.status}
+                        </p>
+                      </div>
+                    </div>
+
+                    {alert.status === "active" && (
+                      <button
+                        onClick={() => resolveSos(alert.id)}
+                        className="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs uppercase tracking-widest transition-all shadow-lg shadow-emerald-900/20"
+                      >
+                        Mark as Resolved
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="rounded-[2rem] border border-dashed border-slate-800 p-12 text-center text-muted-foreground">
+                <p className="font-medium">No SOS alerts recorded yet.</p>
+              </div>
+            )}
           </div>
         )}
       </div>

@@ -12,6 +12,16 @@ interface User {
   password?: string;
 }
 
+export interface SosAlert {
+  id: string;
+  userId: string;
+  userName: string;
+  userRole: UserRole;
+  busNumber: string;
+  timestamp: string;
+  status: "active" | "resolved";
+}
+
 interface AuthContextType {
   user: User | null;
   login: (id: string, password: string, role: UserRole) => boolean;
@@ -19,6 +29,9 @@ interface AuthContextType {
   registerUser: (name: string, id: string, password: string, role: UserRole) => boolean;
   students: User[];
   drivers: User[];
+  sosAlerts: SosAlert[];
+  triggerSos: () => void;
+  resolveSos: (alertId: string) => void;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -77,6 +90,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       return parsed;
     }
     return [];
+  });
+
+  const [sosAlerts, setSosAlerts] = useState<SosAlert[]>(() => {
+    const saved = localStorage.getItem("sosAlerts");
+    return saved ? JSON.parse(saved) : [];
   });
 
   const registerUser = (name: string, id: string, password: string, role: UserRole) => {
@@ -142,6 +160,32 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.removeItem("currentUser");
   };
 
+  const triggerSos = () => {
+    if (!user) return;
+
+    const newAlert: SosAlert = {
+      id: `SOS-${Date.now()}`,
+      userId: user.studentId || "unknown",
+      userName: user.name,
+      userRole: user.role,
+      busNumber: user.busNumber || "Not Assigned",
+      timestamp: new Date().toLocaleTimeString(),
+      status: "active",
+    };
+
+    const updatedAlerts = [newAlert, ...sosAlerts];
+    setSosAlerts(updatedAlerts);
+    localStorage.setItem("sosAlerts", JSON.stringify(updatedAlerts));
+  };
+
+  const resolveSos = (alertId: string) => {
+    const updatedAlerts = sosAlerts.map(alert =>
+      alert.id === alertId ? { ...alert, status: "resolved" as const } : alert
+    );
+    setSosAlerts(updatedAlerts);
+    localStorage.setItem("sosAlerts", JSON.stringify(updatedAlerts));
+  };
+
   return (
     <AuthContext.Provider value={{
       user,
@@ -152,7 +196,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       drivers: [
         MOCK_USERS.driver,
         ...registeredUsers.filter(u => u.role === "driver")
-      ]
+      ],
+      sosAlerts,
+      triggerSos,
+      resolveSos
     }}>
       {children}
     </AuthContext.Provider>
